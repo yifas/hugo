@@ -21,3 +21,12 @@ https://gohugo.io/getting-started/quick-start/
 运行后文章不显示
 
 每篇文章有一个`draft = true`的属性，true代表不显示，需要改成false。`hugo server -D`指令就能显示。
+
+baseURL = 'https://hugo-8of.pages.dev/'要改成自己的域名，否则文章无法打开
+
+五、hugo.toml配置文件
+
+baseURL = 'https://hugo-8of.pages.dev/'
+languageCode = 'en-us'
+title = 'BINLOG'
+theme = 'hugo-theme-tokiwa'

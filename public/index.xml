@@ -26,6 +26,12 @@
 &lt;p&gt;四、踩坑&lt;/p&gt;
 &lt;p&gt;运行后文章不显示&lt;/p&gt;
 &lt;p&gt;每篇文章有一个&lt;code&gt;draft = true&lt;/code&gt;的属性，true代表不显示，需要改成false。&lt;code&gt;hugo server -D&lt;/code&gt;指令就能显示。&lt;/p&gt;
+&lt;p&gt;baseURL = &amp;lsquo;&lt;a href=&#34;https://hugo-8of.pages.dev/&#39;&#34;&gt;https://hugo-8of.pages.dev/&#39;&lt;/a&gt;要改成自己的域名，否则文章无法打开&lt;/p&gt;
+&lt;p&gt;五、hugo.toml配置文件&lt;/p&gt;
+&lt;p&gt;baseURL = &amp;lsquo;&lt;a href=&#34;https://hugo-8of.pages.dev/&#39;&#34;&gt;https://hugo-8of.pages.dev/&#39;&lt;/a&gt;
+languageCode = &amp;rsquo;en-us&amp;rsquo;
+title = &amp;lsquo;BINLOG&amp;rsquo;
+theme = &amp;lsquo;hugo-theme-tokiwa&amp;rsquo;&lt;/p&gt;
 </description>
     </item>
     
