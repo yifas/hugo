@@ -1,15 +1,56 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on My New Hugo Site</title>
+    <title>Posts on BINLOG</title>
     <link>https://example.org/posts/</link>
-    <description>Recent content in Posts on My New Hugo Site</description>
+    <description>Recent content in Posts on BINLOG</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 Aug 2025 16:51:29 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 07 Aug 2025 09:08:29 +0800</lastBuildDate>
     
 	<atom:link href="https://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cloudflare搭建hugo踩坑记录</title>
+      <link>https://example.org/posts/cloudflare%E6%90%AD%E5%BB%BAhugo%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Thu, 07 Aug 2025 09:08:29 +0800</pubDate>
+      
+      <guid>https://example.org/posts/cloudflare%E6%90%AD%E5%BB%BAhugo%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
+      <description>&lt;p&gt;一、Typora与Hugo图片路径引用不一致问题
+&lt;a href=&#34;https://www.cnblogs.com/liumylay/articles/17936688.html&#34;&gt;https://www.cnblogs.com/liumylay/articles/17936688.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;二、搭建教程（部分参考）&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://wander1ng.com/post/hugo+cloudflare%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%8C%87%E5%8D%97/&#34;&gt;https://wander1ng.com/post/hugo+cloudflare%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%8C%87%E5%8D%97/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;三、官方文档&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://gohugo.io/getting-started/quick-start/&#34;&gt;https://gohugo.io/getting-started/quick-start/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;四、踩坑&lt;/p&gt;
+&lt;p&gt;运行后文章不显示&lt;/p&gt;
+&lt;p&gt;每篇文章有一个&lt;code&gt;draft = true&lt;/code&gt;的属性，true代表不显示，需要改成false。&lt;code&gt;hugo server -D&lt;/code&gt;指令就能显示。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My First Post</title>
+      <link>https://example.org/posts/my-first-post/</link>
+      <pubDate>Wed, 06 Aug 2025 16:51:29 +0800</pubDate>
+      
+      <guid>https://example.org/posts/my-first-post/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>测试文章</title>
+      <link>https://example.org/posts/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/</link>
+      <pubDate>Wed, 06 Aug 2025 16:51:29 +0800</pubDate>
+      
+      <guid>https://example.org/posts/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/</guid>
+      <description>&lt;h2 id=&#34;测试文章&#34;&gt;测试文章&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;dfdf&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Int i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 20;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;index.assets/XnNG7sI.png&#34; alt=&#34;XnNG7sI&#34;&gt;&lt;/p&gt;
+</description>
+    </item>
     
   </channel>
 </rss>

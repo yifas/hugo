@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	
-	<title>BINLOG  | 测试文章</title>
+	<title>BINLOG  | Cloudflare搭建hugo踩坑记录</title>
 	<meta name="viewport" content="width=device-width,minimum-scale=1">
 	<meta name="generator" content="Hugo 0.148.1">
 	
@@ -63,7 +63,7 @@
 		<a href="https://example.org/" title="BINLOG" class="heading font-cursive icon">BINLOG</a>
 	</h2>
 </div>
-<h1 class="pt-2">测试文章</h1>
+<h1 class="pt-2">Cloudflare搭建hugo踩坑记录</h1>
 
 <div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
 	
@@ -72,7 +72,7 @@
 
 	
 </div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
-		datetime="2025-08-06T16:51:29&#43;08:00">2025-8-6 16:51</time>
+		datetime="2025-08-07T09:08:29&#43;08:00">2025-8-7 09:08</time>
 </div>
 
 <hr />
@@ -85,11 +85,15 @@
 
 <article>
 	<section class="mx-auto content">
-		<div class="c-rich-text"><h2 id="测试文章">测试文章</h2>
-<blockquote>
-<p>dfdf</p></blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Int i <span style="color:#f92672">=</span> 20;
-</span></span></code></pre></div><p><img src="index.assets/XnNG7sI.png" alt="XnNG7sI"></p>
+		<div class="c-rich-text"><p>一、Typora与Hugo图片路径引用不一致问题
+<a href="https://www.cnblogs.com/liumylay/articles/17936688.html">https://www.cnblogs.com/liumylay/articles/17936688.html</a></p>
+<p>二、搭建教程（部分参考）</p>
+<p><a href="https://wander1ng.com/post/hugo+cloudflare%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%8C%87%E5%8D%97/">https://wander1ng.com/post/hugo+cloudflare%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%8C%87%E5%8D%97/</a></p>
+<p>三、官方文档</p>
+<p><a href="https://gohugo.io/getting-started/quick-start/">https://gohugo.io/getting-started/quick-start/</a></p>
+<p>四、踩坑</p>
+<p>运行后文章不显示</p>
+<p>每篇文章有一个<code>draft = true</code>的属性，true代表不显示，需要改成false。<code>hugo server -D</code>指令就能显示。</p>
 </div>
 	</section>
 
@@ -112,7 +116,7 @@
 	<div class="text-sm text-gray-500 leading-tight a-gray">
 		
 		<br />
-		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 6 words in this page.
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 13 words in this page.
 	</div>
 </div>
 
@@ -123,13 +127,14 @@
 <hr class="double-line" />
 <div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
     
-    
     <a class="flex-grow-0" href="/posts/my-first-post/">
-        My First Post
         <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
             height="24">
             <path fill="none" d="M0 0h24v24H0z" />
-            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        My First Post
+    </a>
+    
     
 </div>
 <div >
