@@ -24,9 +24,12 @@ https://gohugo.io/getting-started/quick-start/
 
 baseURL = 'https://hugo-8of.pages.dev/'要改成自己的域名，否则文章无法打开
 
-五、hugo.toml配置文件
+五、`hugo.toml`配置文件
 
+```toml
 baseURL = 'https://hugo-8of.pages.dev/'
 languageCode = 'en-us'
 title = 'BINLOG'
 theme = 'hugo-theme-tokiwa'
+```
+

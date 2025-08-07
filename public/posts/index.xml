@@ -27,21 +27,12 @@
 &lt;p&gt;运行后文章不显示&lt;/p&gt;
 &lt;p&gt;每篇文章有一个&lt;code&gt;draft = true&lt;/code&gt;的属性，true代表不显示，需要改成false。&lt;code&gt;hugo server -D&lt;/code&gt;指令就能显示。&lt;/p&gt;
 &lt;p&gt;baseURL = &amp;lsquo;&lt;a href=&#34;https://hugo-8of.pages.dev/&#39;&#34;&gt;https://hugo-8of.pages.dev/&#39;&lt;/a&gt;要改成自己的域名，否则文章无法打开&lt;/p&gt;
-&lt;p&gt;五、hugo.toml配置文件&lt;/p&gt;
-&lt;p&gt;baseURL = &amp;lsquo;&lt;a href=&#34;https://hugo-8of.pages.dev/&#39;&#34;&gt;https://hugo-8of.pages.dev/&#39;&lt;/a&gt;
-languageCode = &amp;rsquo;en-us&amp;rsquo;
-title = &amp;lsquo;BINLOG&amp;rsquo;
-theme = &amp;lsquo;hugo-theme-tokiwa&amp;rsquo;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>My First Post</title>
-      <link>https://hugo-8of.pages.dev/posts/my-first-post/</link>
-      <pubDate>Wed, 06 Aug 2025 16:51:29 +0800</pubDate>
-      
-      <guid>https://hugo-8of.pages.dev/posts/my-first-post/</guid>
-      <description></description>
+&lt;p&gt;五、&lt;code&gt;hugo.toml&lt;/code&gt;配置文件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;baseURL&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://hugo-8of.pages.dev/&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;languageCode&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;en-us&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;title&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;BINLOG&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;theme&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;hugo-theme-tokiwa&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
