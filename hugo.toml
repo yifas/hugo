@@ -7,7 +7,7 @@ theme = 'hugo-theme-tokiwa'
 [params]
 bannerFont = "fonts/exampleFont" 
 description = """
-Tokiwa-iro is the theme color of this site.
+欲买桂花同载酒，终不似，少年游。
 """ 
 
 [menu]
