@@ -1,4 +1,4 @@
 baseURL = 'https://hugo-8of.pages.dev/'
 languageCode = 'en-us'
-title = 'BINLOG'
+title = 'Binlog'
 theme = 'hugo-theme-tokiwa'
