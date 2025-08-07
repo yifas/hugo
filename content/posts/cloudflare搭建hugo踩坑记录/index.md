@@ -11,7 +11,7 @@ title = 'Cloudflare搭建hugo踩坑记录'
 
 二、搭建教程（部分参考）
 
-> https://wander1ng.com/post/hugo+cloudflare搭建博客指南/
+> [https://wander1ng.com/post/hugo+cloudflare搭建博客指南/](https://wander1ng.com/post/hugo+cloudflare搭建博客指南/)
 
 三、官方文档
 
