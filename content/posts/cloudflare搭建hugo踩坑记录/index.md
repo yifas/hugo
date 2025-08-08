@@ -2,7 +2,8 @@
 date = '2025-08-07T09:08:29+08:00'
 draft = false
 title = 'Cloudflare搭建hugo踩坑记录'
-
+categories = ['技术文章']
+tags =  ["Hugo", "建站"]
 +++
 
 一、Typora与Hugo图片路径引用不一致问题

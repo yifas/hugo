@@ -2,7 +2,10 @@ baseURL = 'https://hugo-8of.pages.dev/'
 languageCode = 'cn'
 title = 'Binlog'
 theme = 'hugo-theme-tokiwa'
+disableKinds = ['rss']
 
+categories = ['随笔', '技术文章']
+tags = ['AI', 'Java', '建站']
 
 [params]
 bannerFont = "fonts/exampleFont" 
@@ -14,8 +17,8 @@ description = """
 # Shown in the side menu.
 [[menu.main]]
 identifier = "post"
-name = "Posts"
-url = "/post/"
+name = "文章"
+url = "/posts/"
 weight = 1
 [[menu.main]]
 name = "Tags"
@@ -38,6 +41,9 @@ weight = 3
 category = "categories"
 series = "series"
 tag = "tags"
+
+
+
 [params.social]
 bilibili = "http://example.com/"
 github = "https://github.com/"

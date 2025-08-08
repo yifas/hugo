@@ -1,0 +1,7 @@
+文件夹 PATH 列表
+卷序列号为 A0FD-200D
+E:\MINE\WEBSITE\BINLOG\CONTENT
+└─posts
+    ├─cloudflare搭建hugo踩坑记录
+    └─测试文章
+        └─index.assets
