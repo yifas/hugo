@@ -3,10 +3,28 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://hugo-8of.pages.dev/</loc>
-    <lastmod>2025-08-11T14:19:44+08:00</lastmod>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
   </url><url>
     <loc>https://hugo-8of.pages.dev/categories/</loc>
-    <lastmod>2025-08-11T14:19:44+08:00</lastmod>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/categories/java/</loc>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/tags/java/</loc>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/posts/java%E4%B8%ADstream%E6%B5%81%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</loc>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/tags/stream%E6%B5%81/</loc>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/tags/</loc>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/posts/</loc>
+    <lastmod>2025-08-13T13:08:15+08:00</lastmod>
   </url><url>
     <loc>https://hugo-8of.pages.dev/tags/linux/</loc>
     <lastmod>2025-08-11T14:19:44+08:00</lastmod>
@@ -18,12 +36,6 @@
     <lastmod>2025-08-11T14:19:44+08:00</lastmod>
   </url><url>
     <loc>https://hugo-8of.pages.dev/posts/springboot%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC/</loc>
-    <lastmod>2025-08-11T14:19:44+08:00</lastmod>
-  </url><url>
-    <loc>https://hugo-8of.pages.dev/tags/</loc>
-    <lastmod>2025-08-11T14:19:44+08:00</lastmod>
-  </url><url>
-    <loc>https://hugo-8of.pages.dev/posts/</loc>
     <lastmod>2025-08-11T14:19:44+08:00</lastmod>
   </url><url>
     <loc>https://hugo-8of.pages.dev/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/</loc>
