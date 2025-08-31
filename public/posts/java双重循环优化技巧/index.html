@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>Binlog  | Java双重循环优化技巧</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.148.1">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('https:\/\/hugo-8of.pages.dev\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="https://hugo-8of.pages.dev/" title="Binlog" class="heading font-cursive icon">Binlog</a>
+	</h2>
+</div>
+<h1 class="pt-2">Java双重循环优化技巧</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+	<a class="post-taxonomy-category text-medium-red-violet-600 hover:text-medium-red-violet-400"
+		href='/categories/java'>Java</a>
+	
+	
+	
+
+	
+	&nbsp;&nbsp;
+	
+
+	
+	
+	
+	
+	<a class="post-taxonomy-tag text-eucalyptus-500"
+		href='/tags/java'>Java</a>&nbsp;&#47;
+	
+	<a class="post-taxonomy-tag text-eucalyptus-500"
+		href='/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7'>小技巧</a>
+	
+	
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2025-08-31T10:34:54&#43;08:00">2025-8-31 10:34</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text"><h2 id="1两种写法比较">1、两种写法比较</h2>
+<h4 id="11-直接双重for循环">1.1 直接双重For循环</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用于计算循环次数</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> 0;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 老公组</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Couple<span style="color:#f92672">&gt;</span> husbands <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(1, <span style="color:#e6db74">&#34;梁山伯&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(2, <span style="color:#e6db74">&#34;牛郎&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(3, <span style="color:#e6db74">&#34;干将&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(4, <span style="color:#e6db74">&#34;工藤新一&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(5, <span style="color:#e6db74">&#34;罗密欧&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 老婆组</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Couple<span style="color:#f92672">&gt;</span> wives <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(1, <span style="color:#e6db74">&#34;祝英台&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(2, <span style="color:#e6db74">&#34;织女&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(3, <span style="color:#e6db74">&#34;莫邪&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(4, <span style="color:#e6db74">&#34;毛利兰&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(5, <span style="color:#e6db74">&#34;朱丽叶&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (Couple husband : husbands) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (Couple wife : wives) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 记录循环的次数</span>
+</span></span><span style="display:flex;"><span>            count<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (husband.<span style="color:#a6e22e">getFamilyId</span>().<span style="color:#a6e22e">equals</span>(wife.<span style="color:#a6e22e">getFamilyId</span>())) {
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(husband.<span style="color:#a6e22e">getUserName</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;爱&#34;</span> <span style="color:#f92672">+</span> wife.<span style="color:#a6e22e">getUserName</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 牵手成功，换下一位男嘉宾</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;----------------------&#34;</span>);
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;循环了：&#34;</span> <span style="color:#f92672">+</span> count <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;次&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="12-其中一个list转map后再匹配">1.2 其中一个List转Map后再匹配</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用于计算循环次数</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> 0;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 老公组</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Couple<span style="color:#f92672">&gt;</span> husbands <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(1, <span style="color:#e6db74">&#34;梁山伯&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(2, <span style="color:#e6db74">&#34;牛郎&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(3, <span style="color:#e6db74">&#34;干将&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(4, <span style="color:#e6db74">&#34;工藤新一&#34;</span>));
+</span></span><span style="display:flex;"><span>    husbands.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(5, <span style="color:#e6db74">&#34;罗密欧&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 老婆组</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Couple<span style="color:#f92672">&gt;</span> wives <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(1, <span style="color:#e6db74">&#34;祝英台&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(2, <span style="color:#e6db74">&#34;织女&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(3, <span style="color:#e6db74">&#34;莫邪&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(4, <span style="color:#e6db74">&#34;毛利兰&#34;</span>));
+</span></span><span style="display:flex;"><span>    wives.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> Couple(5, <span style="color:#e6db74">&#34;朱丽叶&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 给女嘉宾发牌子</span>
+</span></span><span style="display:flex;"><span>    Map<span style="color:#f92672">&lt;</span>Integer, Couple<span style="color:#f92672">&gt;</span> wivesMap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (Couple wife : wives) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 女嘉宾现在不在List里了，而是去了wivesMap中，前面放了一块牌子：男嘉宾的号码</span>
+</span></span><span style="display:flex;"><span>        wivesMap.<span style="color:#a6e22e">put</span>(wife.<span style="color:#a6e22e">getFamilyId</span>(), wife);
+</span></span><span style="display:flex;"><span>        count<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 男嘉宾上场</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (Couple husband : husbands) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 找到举着自己号码牌的女嘉宾</span>
+</span></span><span style="display:flex;"><span>        Couple wife <span style="color:#f92672">=</span> wivesMap.<span style="color:#a6e22e">get</span>(husband.<span style="color:#a6e22e">getFamilyId</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(husband.<span style="color:#a6e22e">getUserName</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;爱&#34;</span> <span style="color:#f92672">+</span> wife.<span style="color:#a6e22e">getUserName</span>());
+</span></span><span style="display:flex;"><span>        count<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;----------------------&#34;</span>);
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;循环了：&#34;</span> <span style="color:#f92672">+</span> count <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;次&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="2结论">2、结论</h2>
+<h4 id="-两种写法的区别">🔍 两种写法的区别</h4>
+<table>
+  <thead>
+      <tr>
+          <th>写法</th>
+          <th>查找方式</th>
+          <th>时间复杂度</th>
+          <th>循环次数</th>
+          <th>原理</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>第一种（<code>Map</code>）</td>
+          <td>通过 <code>HashMap</code> 的 <code>get(key)</code> 直接定位</td>
+          <td><strong>O(1)</strong> 平均</td>
+          <td><code>wives.size()</code> + <code>husbands.size()</code> ≈ 10 次</td>
+          <td>哈希表用哈希函数直接计算出存储位置，查找几乎是瞬时的</td>
+      </tr>
+      <tr>
+          <td>第二种（双层循环）</td>
+          <td>遍历 <code>wives</code> 列表逐个比对</td>
+          <td><strong>O(n²)</strong></td>
+          <td><code>husbands.size()</code> × <code>wives.size()</code> = 25 次</td>
+          <td>每个丈夫都要从头到尾扫描所有妻子，才能找到匹配的那一个</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="-为什么第一种更快">⚡ 为什么第一种更快</h4>
+<ol>
+<li><strong>数据结构不同</strong>
+<ul>
+<li>第一种用 <code>HashMap</code> 存储妻子信息，<code>key</code> 是 <code>familyId</code>，查找时直接用哈希算法定位到内存位置，平均只需一次操作（O(1)）。</li>
+<li>第二种用 <code>List</code> 存储妻子信息，查找时只能从头到尾遍历（O(n)）。</li>
+</ul>
+</li>
+<li><strong>循环次数少</strong>
+<ul>
+<li>第一种：
+<ul>
+<li>第一次循环：把妻子放进 <code>Map</code>（n 次）</li>
+<li>第二次循环：丈夫直接用 <code>get()</code> 找妻子（n 次）</li>
+<li>总共 <strong>2n 次</strong></li>
+</ul>
+</li>
+<li>第二种：
+<ul>
+<li>双层循环：n × n 次</li>
+<li>总共 <strong>n² 次</strong></li>
+</ul>
+</li>
+<li>当 n 很大时，n² 会比 2n 大很多。</li>
+</ul>
+</li>
+<li><strong>时间复杂度差异</strong>
+<ul>
+<li>第一种：O(n)</li>
+<li>第二种：O(n²)</li>
+<li>当数据量从 5 增加到 10 万时，第一种依然很快，第二种会慢得不可忍受。</li>
+</ul>
+</li>
+</ol>
+<h4 id="-举个例子">📌 举个例子</h4>
+<p>假设有 10 万对夫妻：</p>
+<ul>
+<li>第一种：大约执行 <strong>20 万次</strong> 操作</li>
+<li>第二种：大约执行 <strong>100 亿次</strong> 操作 差距是 <strong>五万倍</strong> 以上，这就是为什么第一种更快。</li>
+</ul>
+<p>✅ <strong>总结</strong>： 第一种快的原因是 <strong>用哈希表（HashMap）将查找从 O(n) 降到了 O(1)</strong>，从而把整体复杂度从 O(n²) 降到了 O(n)。</p>
+<h2 id="3应用">3、应用</h2>
+<h4 id="1-电商订单匹配">1️⃣ 电商订单匹配</h4>
+<p><strong>场景</strong>：</p>
+<ul>
+<li>有一个订单列表（包含商品ID），需要快速匹配商品库里的商品信息（价格、库存、促销信息）。</li>
+</ul>
+<p><strong>用法对比</strong>：</p>
+<ul>
+<li><strong>双层循环</strong>：每个订单商品都要遍历整个商品库。</li>
+<li><strong>HashMap</strong>：商品库先转成 <code>Map&lt;商品ID, 商品对象&gt;</code>，订单直接用 <code>get()</code> 查找。</li>
+</ul>
+<p><strong>好处</strong>：在大促活动（如双11）时，能显著减少 CPU 占用，提升响应速度。</p>
+<h4 id="2-学生与成绩匹配">2️⃣ 学生与成绩匹配</h4>
+<p><strong>场景</strong>：</p>
+<ul>
+<li>有一个学生名单和一个成绩单，需要快速找到每个学生的成绩。</li>
+</ul>
+<p><strong>用法对比</strong>：</p>
+<ul>
+<li><strong>双层循环</strong>：每个学生都要遍历成绩单。</li>
+<li><strong>HashMap</strong>：成绩单先转成 <code>Map&lt;学号, 成绩&gt;</code>，直接查找。</li>
+</ul>
+<p><strong>好处</strong>：适合学校成绩管理系统、在线考试系统等。</p>
+<h4 id="3-物联网设备状态查询">3️⃣ 物联网设备状态查询</h4>
+<p><strong>场景</strong>：</p>
+<ul>
+<li>有几万台传感器设备，每台设备有唯一的 <code>设备ID</code>，需要根据实时上报的 <code>设备ID</code> 找到设备信息（位置、类型、阈值等）。</li>
+</ul>
+<p><strong>用法对比</strong>：</p>
+<ul>
+<li><strong>双层循环</strong>：每条数据都要遍历设备列表。</li>
+<li><strong>HashMap</strong>：设备列表先转成 <code>Map&lt;设备ID, 设备对象&gt;</code>，直接查找。</li>
+</ul>
+<p><strong>好处</strong>：在秒级数据上报的场景下，能保证系统实时响应。</p>
+</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+	<li class="px-1 md:px-0">
+		<a href="/posts/" title="文章 page" 
+			class="font-medium text-medium-red-violet-600 hover:text-medium-red-violet-400" >
+			文章
+		</a>
+	</li>
+	
+	<li class="px-1 md:px-0">
+		<a href="/categories/" title="分类 page" >
+			分类
+		</a>
+	</li>
+	
+	<li class="px-1 md:px-0">
+		<a href="/tags/" title="标签 page" >
+			标签
+		</a>
+	</li>
+	
+	<li class="px-1 md:px-0">
+		<a href="/about/" title="关于我 page" >
+			关于我
+		</a>
+	</li>
+	
+	
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+	
+	<a href='http://example.com/' target="_blank" class="bilibili icon pl-1 text-eucalyptus-400 hover:text-java-400" title="bilibili link" rel="noopener"
+		aria-label="follow on bilibili——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path d="M7.172 2.757L10.414 6h3.171l3.243-3.242a1 1 0 0 1 1.415 1.415l-1.829 1.827L18.5 6A3.5 3.5 0 0 1 22 9.5v8a3.5 3.5 0 0 1-3.5 3.5h-13A3.5 3.5 0 0 1 2 17.5v-8A3.5 3.5 0 0 1 5.5 6h2.085L5.757 4.171a1 1 0 0 1 1.415-1.415zM18.5 8h-13a1.5 1.5 0 0 0-1.493 1.356L4 9.5v8a1.5 1.5 0 0 0 1.356 1.493L5.5 19h13a1.5 1.5 0 0 0 1.493-1.356L20 17.5v-8A1.5 1.5 0 0 0 18.5 8zM8 11a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1zm8 0a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1z"/>
+    </g>
+</svg>
+
+		</div>
+	</a>
+	
+	
+	
+	<a href='https://github.com/' target="_blank" class="github icon pl-1 text-eucalyptus-400 hover:text-java-400" title="github link" rel="noopener"
+		aria-label="follow on github——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path fill-rule="nonzero" d="M5.883 18.653c-.3-.2-.558-.455-.86-.816a50.32 50.32 0 0 1-.466-.579c-.463-.575-.755-.84-1.057-.949a1 1 0 0 1 .676-1.883c.752.27 1.261.735 1.947 1.588-.094-.117.34.427.433.539.19.227.33.365.44.438.204.137.587.196 1.15.14.023-.382.094-.753.202-1.095C5.38 15.31 3.7 13.396 3.7 9.64c0-1.24.37-2.356 1.058-3.292-.218-.894-.185-1.975.302-3.192a1 1 0 0 1 .63-.582c.081-.024.127-.035.208-.047.803-.123 1.937.17 3.415 1.096A11.731 11.731 0 0 1 12 3.315c.912 0 1.818.104 2.684.308 1.477-.933 2.613-1.226 3.422-1.096.085.013.157.03.218.05a1 1 0 0 1 .616.58c.487 1.216.52 2.297.302 3.19.691.936 1.058 2.045 1.058 3.293 0 3.757-1.674 5.665-4.642 6.392.125.415.19.879.19 1.38a300.492 300.492 0 0 1-.012 2.716 1 1 0 0 1-.019 1.958c-1.139.228-1.983-.532-1.983-1.525l.002-.446.005-.705c.005-.708.007-1.338.007-1.998 0-.697-.183-1.152-.425-1.36-.661-.57-.326-1.655.54-1.752 2.967-.333 4.337-1.482 4.337-4.66 0-.955-.312-1.744-.913-2.404a1 1 0 0 1-.19-1.045c.166-.414.237-.957.096-1.614l-.01.003c-.491.139-1.11.44-1.858.949a1 1 0 0 1-.833.135A9.626 9.626 0 0 0 12 5.315c-.89 0-1.772.119-2.592.35a1 1 0 0 1-.83-.134c-.752-.507-1.374-.807-1.868-.947-.144.653-.073 1.194.092 1.607a1 1 0 0 1-.189 1.045C6.016 7.89 5.7 8.694 5.7 9.64c0 3.172 1.371 4.328 4.322 4.66.865.097 1.201 1.177.544 1.748-.192.168-.429.732-.429 1.364v3.15c0 .986-.835 1.725-1.96 1.528a1 1 0 0 1-.04-1.962v-.99c-.91.061-1.662-.088-2.254-.485z"/>
+    </g>
+</svg>
+
+		</div>
+	</a>
+	
+	
+	
+	<a href='mailto:anon@example.com' target="_blank" class="mail icon pl-1 text-eucalyptus-400 hover:text-java-400" title="mail link" rel="noopener"
+		aria-label="follow on mail——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"/>
+    </g>
+</svg>
+		</div>
+	</a>
+	
+	
+	
+	<a href='http://example.com/' target="_blank" class="zhihu icon pl-1 text-eucalyptus-400 hover:text-java-400" title="zhihu link" rel="noopener"
+		aria-label="follow on zhihu——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path d="M12.344 17.963l-1.688 1.074-2.131-3.35c-.44 1.402-1.172 2.665-2.139 3.825-.402.483-.82.918-1.301 1.375-.155.147-.775.717-.878.82l-1.414-1.414c.139-.139.787-.735.915-.856.43-.408.795-.79 1.142-1.206 1.266-1.518 2.03-3.21 2.137-5.231H3v-2h4V7h-.868c-.689 1.266-1.558 2.222-2.618 2.857L2.486 8.143c1.395-.838 2.425-2.604 3.038-5.36l1.952.434c-.14.633-.303 1.227-.489 1.783H11.5v2H9v4h2.5v2H9.185l3.159 4.963zm3.838-.07L17.298 17H19V7h-4v10h.736l.446.893zM13 5h8v14h-3l-2.5 2-1-2H13V5z"/>
+    </g>
+</svg>
+
+		</div>
+	</a>
+	
+	
+</div>
+
+
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 345 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/posts/mybatis%E8%87%AA%E5%AE%9A%E4%B9%89sql%E6%89%93%E5%8D%B0/">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        Mybatis自定义SQL打印
+    </a>
+    
+    
+</div>
+<div >
+
+
+
+<div class="font-serif pb-2 flex align-start leading-loose">
+	<span class="heading pr-6 leading-loose">Related</span>
+	<span >
+		
+			<a href="/posts/mybatis%E8%87%AA%E5%AE%9A%E4%B9%89sql%E6%89%93%E5%8D%B0/">Mybatis自定义SQL打印</a>&nbsp;&nbsp;&#47;&nbsp;
+		
+			<a href="/posts/java%E4%B8%ADstream%E6%B5%81%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">Java中Stream流常用操作</a>
+		
+</span>
+</div>
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>
