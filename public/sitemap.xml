@@ -3,10 +3,28 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://hugo-8of.pages.dev/</loc>
-    <lastmod>2025-09-12T13:16:35+08:00</lastmod>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
   </url><url>
     <loc>https://hugo-8of.pages.dev/categories/</loc>
-    <lastmod>2025-09-12T13:16:35+08:00</lastmod>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/tags/rustdesk/</loc>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/tags/</loc>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/posts/</loc>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/</loc>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/tags/%E8%BF%9C%E7%A8%8B%E6%A0%B9%E6%8D%AE/</loc>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
+  </url><url>
+    <loc>https://hugo-8of.pages.dev/posts/%E9%80%9A%E8%BF%87dockercompose%E8%87%AA%E5%BB%BArustdesk%E6%9C%8D%E5%8A%A1/</loc>
+    <lastmod>2025-10-21T10:32:49+08:00</lastmod>
   </url><url>
     <loc>https://hugo-8of.pages.dev/tags/java/</loc>
     <lastmod>2025-09-12T13:16:35+08:00</lastmod>
@@ -14,16 +32,7 @@
     <loc>https://hugo-8of.pages.dev/tags/springboot/</loc>
     <lastmod>2025-09-12T13:16:35+08:00</lastmod>
   </url><url>
-    <loc>https://hugo-8of.pages.dev/tags/</loc>
-    <lastmod>2025-09-12T13:16:35+08:00</lastmod>
-  </url><url>
     <loc>https://hugo-8of.pages.dev/posts/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95sso%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</loc>
-    <lastmod>2025-09-12T13:16:35+08:00</lastmod>
-  </url><url>
-    <loc>https://hugo-8of.pages.dev/posts/</loc>
-    <lastmod>2025-09-12T13:16:35+08:00</lastmod>
-  </url><url>
-    <loc>https://hugo-8of.pages.dev/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/</loc>
     <lastmod>2025-09-12T13:16:35+08:00</lastmod>
   </url><url>
     <loc>https://hugo-8of.pages.dev/categories/java/</loc>
