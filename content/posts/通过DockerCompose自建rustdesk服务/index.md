@@ -4,7 +4,7 @@ draft = false
 title = '通过DockerCompose自建rustdesk服务'
 
 categories = ['技术文章']
-tags =  ["远程根据", "rustdesk"]
+tags =  ["远程工具", "rustdesk"]
 
 +++
 
