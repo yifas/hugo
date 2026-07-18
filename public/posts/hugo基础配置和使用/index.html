@@ -106,7 +106,7 @@
 
 <article>
 	<section class="mx-auto content">
-		<div class="c-rich-text"><p>一、基本配置文件<code>hugo.toml</code></p>
+		<div class="c-rich-text"><h3 id="一基本配置文件hugotoml">一、基本配置文件<code>hugo.toml</code></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#a6e22e">baseURL</span> = <span style="color:#e6db74">&#39;https://hugo-8of.pages.dev/&#39;</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">languageCode</span> = <span style="color:#e6db74">&#39;cn&#39;</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">title</span> = <span style="color:#e6db74">&#39;Binlog&#39;</span>
@@ -166,18 +166,50 @@
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">weibo</span> = <span style="color:#e6db74">&#34;http://example.com/&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">youtube</span> = <span style="color:#e6db74">&#34;https://youtube.com/&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">zhihu</span> = <span style="color:#e6db74">&#34;http://example.com/&#34;</span>
-</span></span></code></pre></div><p>二、基本使用</p>
-<p>1、新建文章</p>
+</span></span></code></pre></div><h3 id="二基本使用">二、基本使用</h3>
+<h5 id="1新建文章">1、新建文章</h5>
 <blockquote>
 <p>hugo new content/posts/文章标题/index.md</p></blockquote>
-<p>2、编译项目</p>
+<h5 id="2编译项目">2、编译项目</h5>
 <blockquote>
 <p>hugo</p></blockquote>
-<p>3、git上传至github</p>
+<h5 id="3git上传至github">3、git上传至github</h5>
 <blockquote>
 <p>git add .</p>
 <p>git commit -m &ldquo;修改&rdquo;</p>
 <p>git push</p></blockquote>
+<h3 id="三其它注意事项后面补充">三、其它注意事项[后面补充]</h3>
+<h5 id="1分类和标签">1、分类和标签</h5>
+<blockquote>
+<p>categories  配置文章分类</p>
+<p>tags 配置文章标签</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#a6e22e">date</span> = <span style="color:#e6db74">&#39;2025-08-08T15:32:31+08:00&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">draft</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">title</span> = <span style="color:#e6db74">&#39;Hugo基础配置和使用&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">categories</span> = [<span style="color:#e6db74">&#39;技术文章&#39;</span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">tags</span> =  [<span style="color:#e6db74">&#34;Hugo&#34;</span>, <span style="color:#e6db74">&#34;建站&#34;</span>]
+</span></span></code></pre></div><h5 id="2hugo指令执行目录">2、hugo指令执行目录</h5>
+<blockquote>
+<p>由于太久没发布文章，忘记了执行目录 /dog</p>
+<p>因为目前hugo项目是托管在github上的，所以需要在<code>.git文件夹所在目录</code>运行创建文章指令<code>hugo new content/posts/文章标题/index.md</code>
+hugo 当时应该是配置到了环境变量，所以直接能使用</p></blockquote>
+<h5 id="3github的token失效导致git-push失败">3、github的token失效，导致git push失败</h5>
+<blockquote>
+<h4 id="1-生成-personal-access-token如果还没生成">1. 生成 Personal Access Token（如果还没生成）</h4>
+<ol>
+<li>打开 <a href="https://github.com/settings/tokens">https://github.com/settings/tokens</a></li>
+<li>点击 <strong>Generate new token (classic)</strong></li>
+<li>给 Token 起个名字（比如 git-push-token）</li>
+<li>勾选权限（至少勾选 repo）</li>
+<li>点击 <strong>Generate token</strong></li>
+<li><strong>立即复制</strong> 这个 token（离开页面后就再也看不到了）</li>
+</ol>
+<h4 id="2-配置-git-使用-token">2. 配置 Git 使用 Token</h4>
+<p><strong>（推荐 - 让 Git 记住 Token）：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote set-url origin https://&lt;你的用户名&gt;:&lt;你的PAT&gt;@github.com/yifas/hugo.git
+</span></span></code></pre></div><p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote set-url origin https://yifas:ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@github.com/yifas/hugo.git
+</span></span></code></pre></div></blockquote>
 </div>
 	</section>
 
@@ -296,7 +328,7 @@
 	<div class="text-sm text-gray-500 leading-tight a-gray">
 		
 		<br />
-		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 141 words in this page.
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 219 words in this page.
 	</div>
 </div>
 
