@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>Binlog  | acme.sh 自动续期教程：签发证书、部署到Nginx并自动重载</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.148.1">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('https:\/\/hugo-8of.pages.dev\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="https://hugo-8of.pages.dev/" title="Binlog" class="heading font-cursive icon">Binlog</a>
+	</h2>
+</div>
+<h1 class="pt-2">acme.sh 自动续期教程：签发证书、部署到Nginx并自动重载</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+	<a class="post-taxonomy-category text-medium-red-violet-600 hover:text-medium-red-violet-400"
+		href='/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0'>技术文章</a>
+	
+	
+	
+
+	
+	&nbsp;&nbsp;
+	
+
+	
+	
+	
+	
+	<a class="post-taxonomy-tag text-eucalyptus-500"
+		href='/tags/acme.sh'>acme.sh</a>&nbsp;&#47;
+	
+	<a class="post-taxonomy-tag text-eucalyptus-500"
+		href='/tags/https'>HTTPS</a>&nbsp;&#47;
+	
+	<a class="post-taxonomy-tag text-eucalyptus-500"
+		href='/tags/nginx'>Nginx</a>&nbsp;&#47;
+	
+	<a class="post-taxonomy-tag text-eucalyptus-500"
+		href='/tags/ssl%E8%AF%81%E4%B9%A6'>SSL证书</a>
+	
+	
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2026-08-03T15:30:00&#43;08:00">2026-8-3 15:30</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text"><h3 id="acmesh-简介">acme.sh 简介</h3>
+<p>HTTPS 证书通常有效期为 90 天（Let&rsquo;s Encrypt）或更长，手动续期不仅繁琐还容易漏掉，一旦证书过期，浏览器就会直接报安全错误。<strong>acme.sh</strong> 是一个纯 Shell 实现的 ACME 客户端，可以自动完成证书的申请、安装和续期，全程无需人工干预。</p>
+<p>acme.sh 的主要特点：</p>
+<ul>
+<li>纯 Shell 脚本，无任何依赖，安装即用</li>
+<li>支持 Let&rsquo;s Encrypt、ZeroSSL、BuyPass 等多家 CA</li>
+<li>支持 webroot、nginx、DNS 等多种验证方式，DNS 方式可签发泛域名证书</li>
+<li>安装时自动注册 crontab 定时任务，每天检查证书有效期，剩余不足 60 天自动续期</li>
+<li>续期成功后自动执行 <code>--reloadcmd</code> 指定的命令（如重载 Nginx），无需手动操作</li>
+</ul>
+<p>整体流程如下：</p>
+<p><img src="index.assets/flow-renew.png" alt="自动续期流程图"></p>
+<h3 id="安装-acmesh">安装 acme.sh</h3>
+<p>使用以下命令一键安装（安装到当前用户目录 <code>~/.acme.sh</code>）：</p>
+<blockquote>
+<p>curl <a href="https://get.acme.sh">https://get.acme.sh</a> | sh</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@web-server:~# curl https://get.acme.sh | sh -s email<span style="color:#f92672">=</span>admin@example.com
+</span></span><span style="display:flex;"><span>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span></span><span style="display:flex;"><span>                                 Dload  Upload   Total   Spent    Left  Speed
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">100</span>  <span style="color:#ae81ff">2268</span>  <span style="color:#ae81ff">100</span>  <span style="color:#ae81ff">2268</span>    <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span>   <span style="color:#ae81ff">4978</span>      <span style="color:#ae81ff">0</span> --:--:-- --:--:-- --:--:--  <span style="color:#ae81ff">4978</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:01<span style="color:#f92672">]</span> Installing from online archive.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:02<span style="color:#f92672">]</span> Downloading https://github.com/acmesh-official/acme.sh/archive/master.tar.gz
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:05<span style="color:#f92672">]</span> Installing to /root/.acme.sh
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:06<span style="color:#f92672">]</span> Installed to /root/.acme.sh
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:06<span style="color:#f92672">]</span> Installing alias to <span style="color:#e6db74">&#39;/root/.bashrc&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:06<span style="color:#f92672">]</span> OK, Close and reopen your terminal to start using acme.sh
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:06<span style="color:#f92672">]</span> Installing cron job
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:07<span style="color:#f92672">]</span> Good, bash is found, so change the shebang to use bash as preferred.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:00:08<span style="color:#f92672">]</span> Install success!
+</span></span></code></pre></div><blockquote>
+<p>提示：<code>-s email=xxx</code> 为可选参数，指定注册邮箱。如果忘记指定，也可以稍后通过 <code>--register-account</code> 注册。</p></blockquote>
+<p>安装完成后可以查看帮助确认：</p>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;help</p></blockquote>
+<h3 id="注册-acme-账号">注册 ACME 账号</h3>
+<p>使用默认 CA（ZeroSSL）前需要注册账号：</p>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;register-account -m <a href="mailto:admin@example.com">admin@example.com</a></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@web-server:~# ~/.acme.sh/acme.sh --register-account -m admin@example.com
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:05:00<span style="color:#f92672">]</span> Registering account
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:05:02<span style="color:#f92672">]</span> Registered
+</span></span></code></pre></div><p>如果想使用 Let&rsquo;s Encrypt，可以切换默认 CA：</p>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;set-default-ca &ndash;server letsencrypt</p></blockquote>
+<h3 id="签发证书的三种方式">签发证书的三种方式</h3>
+<p>签发证书前需要选择域名验证方式，acme.sh 最常用的有三种：</p>
+<table>
+  <thead>
+      <tr>
+          <th>方式</th>
+          <th>适用场景</th>
+          <th>是否需要开放端口</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>--webroot</code></td>
+          <td>已有网站目录（静态站点）</td>
+          <td>80 端口</td>
+      </tr>
+      <tr>
+          <td><code>--nginx</code></td>
+          <td>Nginx 已监听 80/443</td>
+          <td>80/443 端口</td>
+      </tr>
+      <tr>
+          <td><code>--dns</code></td>
+          <td>无外网访问、泛域名</td>
+          <td>不需要</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="方式一webroot-模式">方式一：webroot 模式</h4>
+<p>适合网站根目录固定、可以写入验证文件的场景：</p>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;issue -d example.com -w /var/www/html</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@web-server:~# ~/.acme.sh/acme.sh --issue -d example.com -w /var/www/html
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:10:00<span style="color:#f92672">]</span> Creating domain key
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:10:01<span style="color:#f92672">]</span> The domain key is here: /root/.acme.sh/example.com/example.com.key
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:10:02<span style="color:#f92672">]</span> Single domain<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;example.com&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:10:03<span style="color:#f92672">]</span> Getting webroot <span style="color:#66d9ef">for</span> domain<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;example.com&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:10:04<span style="color:#f92672">]</span> Verifying: example.com
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:10:06<span style="color:#f92672">]</span> Success
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:10:06<span style="color:#f92672">]</span> Your cert is in: /root/.acme.sh/example.com/example.com.cer
+</span></span></code></pre></div><h4 id="方式二nginx-模式">方式二：nginx 模式</h4>
+<p>Nginx 已配置好 80/443 监听时，acme.sh 会自动修改 Nginx 配置完成验证再还原：</p>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;issue -d example.com &ndash;nginx</p></blockquote>
+<h4 id="方式三dns-模式">方式三：DNS 模式</h4>
+<p>适合泛域名（<code>*.example.com</code>）或无公网访问的服务器，以 Cloudflare 为例（需要先配置好 API Token）：</p>
+<blockquote>
+<p>export CF_Token=&ldquo;你的Cloudflare_API_Token&rdquo;
+~/.acme.sh/acme.sh &ndash;issue -d example.com -d &ldquo;*.example.com&rdquo; &ndash;dns dns_cf</p></blockquote>
+<blockquote>
+<p>提示：acme.sh 内置了几十种 DNS 服务商的 API 对接（dns_cf、dns_ali、dns_dp、dns_he 等），手动添加 TXT 记录也可以，但无法全自动续期，建议优先使用 API 方式。</p></blockquote>
+<h3 id="安装证书到-nginx">安装证书到 Nginx</h3>
+<p>签发完成后，证书文件默认存放在 <code>~/.acme.sh/example.com/</code> 目录下，但<strong>不建议</strong>直接让 Nginx 引用该目录（升级或重新签发时目录结构可能变化），正确做法是使用 <code>--install-cert</code> 把证书复制到固定位置，并指定续期后要执行的命令：</p>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;install-cert -d example.com <br>
+&ndash;key-file /etc/nginx/ssl/example.com.key <br>
+&ndash;fullchain-file /etc/nginx/ssl/example.com.pem <br>
+&ndash;reloadcmd &ldquo;systemctl reload nginx&rdquo;</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@web-server:~# mkdir -p /etc/nginx/ssl
+</span></span><span style="display:flex;"><span>root@web-server:~# ~/.acme.sh/acme.sh --install-cert -d example.com <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>&gt;   --key-file /etc/nginx/ssl/example.com.key <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>&gt;   --fullchain-file /etc/nginx/ssl/example.com.pem <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>&gt;   --reloadcmd <span style="color:#e6db74">&#34;systemctl reload nginx&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:15:00<span style="color:#f92672">]</span> Installing key to: /etc/nginx/ssl/example.com.key
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:15:00<span style="color:#f92672">]</span> Installing full chain to: /etc/nginx/ssl/example.com.pem
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:15:01<span style="color:#f92672">]</span> Run reload cmd: systemctl reload nginx
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2026-08-01 10:15:02<span style="color:#f92672">]</span> Reload success
+</span></span></code></pre></div><blockquote>
+<p>参数说明：</p>
+<ul>
+<li><code>--key-file</code>：私钥文件路径</li>
+<li><code>--fullchain-file</code>：证书链完整文件路径（Nginx 推荐使用 fullchain）</li>
+<li><code>--reloadcmd</code>：续期成功并部署完成后自动执行的命令，这里是重载 Nginx</li>
+</ul></blockquote>
+<h3 id="nginx-https-配置">Nginx HTTPS 配置</h3>
+<p>证书安装好后，修改 Nginx 配置开启 HTTPS：</p>
+<blockquote>
+<p>vim /etc/nginx/conf.d/example.com.conf</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nginx" data-lang="nginx"><span style="display:flex;"><span><span style="color:#66d9ef">server</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">listen</span> <span style="color:#ae81ff">443</span> <span style="color:#e6db74">ssl</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server_name</span> <span style="color:#e6db74">example.com</span> <span style="color:#e6db74">www.example.com</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ssl_certificate</span>     <span style="color:#e6db74">/etc/nginx/ssl/example.com.pem</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ssl_certificate_key</span> <span style="color:#e6db74">/etc/nginx/ssl/example.com.key</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ssl_protocols</span> <span style="color:#e6db74">TLSv1.2</span> <span style="color:#e6db74">TLSv1.3</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ssl_ciphers</span> <span style="color:#e6db74">HIGH:!aNULL:!MD5</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">/</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_pass</span> <span style="color:#e6db74">http://127.0.0.1:8080</span>;  <span style="color:#75715e"># 示例：反代到后端服务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">Host</span> $host;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Real-IP</span> $remote_addr;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Forwarded-For</span> $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Forwarded-Proto</span> $scheme;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># HTTP 强制跳转 HTTPS
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">server</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">listen</span> <span style="color:#ae81ff">80</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server_name</span> <span style="color:#e6db74">example.com</span> <span style="color:#e6db74">www.example.com</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">return</span> <span style="color:#ae81ff">301</span> <span style="color:#e6db74">https://</span>$host$request_uri;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>修改配置后务必先测试再重载：<code>nginx -t &amp;&amp; nginx -s reload</code></p></blockquote>
+<p>证书部署与访问的整体关系：</p>
+<p><img src="index.assets/deploy-struct.png" alt="证书部署架构图"></p>
+<h3 id="自动续期原理">自动续期原理</h3>
+<p>acme.sh 安装时会自动注册一条 crontab 定时任务：</p>
+<blockquote>
+<p>crontab -l</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@web-server:~# crontab -l
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># acme.sh 自动续期任务，每天凌晨 0 点执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> * * * <span style="color:#e6db74">&#34;/root/.acme.sh&#34;</span>/acme.sh --cron --home <span style="color:#e6db74">&#34;/root/.acme.sh&#34;</span> &gt; /dev/null
+</span></span></code></pre></div><p>每天定时检查所有证书的有效期：</p>
+<ul>
+<li>剩余天数 <strong>大于 60 天</strong>：什么都不做，等待下次检查</li>
+<li>剩余天数 <strong>不足 60 天</strong>：自动重新签发证书 → 执行 <code>--install-cert</code> 部署 → 执行 <code>--reloadcmd</code> 重载 Nginx</li>
+</ul>
+<p>整个续期过程完全无人值守，这也是&quot;自动续期&quot;的核心。<strong>只要证书文件路径不变、<code>reloadcmd</code> 配置正确，Nginx 会一直持有有效证书。</strong></p>
+<h3 id="验证与常用命令">验证与常用命令</h3>
+<ol>
+<li>查看已签发的证书列表</li>
+</ol>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;list</p></blockquote>
+<ol start="2">
+<li>查看证书到期时间</li>
+</ol>
+<blockquote>
+<p>openssl x509 -enddate -noout -in /etc/nginx/ssl/example.com.pem</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@web-server:~# openssl x509 -enddate -noout -in /etc/nginx/ssl/example.com.pem
+</span></span><span style="display:flex;"><span>notAfter<span style="color:#f92672">=</span>Oct <span style="color:#ae81ff">30</span> 23:59:59 <span style="color:#ae81ff">2026</span> GMT
+</span></span></code></pre></div><ol start="3">
+<li>手动强制续期测试（验证整个自动流程是否正常）</li>
+</ol>
+<blockquote>
+<p>~/.acme.sh/acme.sh &ndash;renew -d example.com &ndash;force</p></blockquote>
+<ol start="4">
+<li>查看 Nginx 是否已加载新证书</li>
+</ol>
+<blockquote>
+<p>nginx -T | grep -E &ldquo;ssl_certificate|ssl_certificate_key&rdquo;</p></blockquote>
+<h3 id="常见问题与注意事项">常见问题与注意事项</h3>
+<ul>
+<li>
+<p><strong>证书目录权限</strong>：<code>/etc/nginx/ssl/</code> 建议设置为仅 root 可读，私钥文件权限 <code>600</code>，证书文件 <code>644</code>，避免私钥泄露</p>
+</li>
+<li>
+<p><strong>reloadcmd 权限不足</strong>：如果 <code>nginx -s reload</code> 报权限错误，改用 <code>systemctl reload nginx</code>；Nginx 跑在 Docker 里时使用 <code>docker exec nginx nginx -s reload</code></p>
+</li>
+<li>
+<p><strong>Nginx 未监听 80 端口时</strong>：webroot/nginx 模式都无法验证，此时只能用 DNS 模式</p>
+</li>
+<li>
+<p><strong>泛域名证书</strong>：<code>*.example.com</code> 只能通过 DNS 模式签发，且不支持多级子域名（如 <code>a.b.example.com</code>）</p>
+</li>
+<li>
+<p><strong>默认 CA 是 ZeroSSL</strong>：需要注册邮箱；不想用可以切回 Let&rsquo;s Encrypt（见上文 <code>--set-default-ca</code>）</p>
+</li>
+<li>
+<p><strong>升级 acme.sh</strong>：<code>~/.acme.sh/acme.sh --upgrade</code>，升级不会影响已签发证书</p>
+</li>
+<li>
+<p><strong>服务器重启后证书失效？</strong>：不会，证书文件是持久的，cron 任务也会随系统定时器继续执行</p>
+</li>
+</ul>
+<h3 id="总结">总结</h3>
+<p>acme.sh 的核心价值在于<strong>一次配置、永久省心</strong>：签发 → 安装 → 自动续期 → 自动重载 Nginx，整个闭环完全自动化。配合 <code>--install-cert</code> 的固定路径部署和 <code>--reloadcmd</code>，可以彻底告别&quot;证书过期网站打不开&quot;的尴尬。</p>
+<p>建议所有自建 HTTPS 服务（Nginx、Tomcat、Caddy 等）都纳入 acme.sh 统一管理，运维幸福感直接拉满。</p>
+</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+	<li class="px-1 md:px-0">
+		<a href="/posts/" title="文章 page" 
+			class="font-medium text-medium-red-violet-600 hover:text-medium-red-violet-400" >
+			文章
+		</a>
+	</li>
+	
+	<li class="px-1 md:px-0">
+		<a href="/categories/" title="分类 page" >
+			分类
+		</a>
+	</li>
+	
+	<li class="px-1 md:px-0">
+		<a href="/tags/" title="标签 page" >
+			标签
+		</a>
+	</li>
+	
+	<li class="px-1 md:px-0">
+		<a href="/about/" title="关于我 page" >
+			关于我
+		</a>
+	</li>
+	
+	
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+	
+	<a href='http://example.com/' target="_blank" class="bilibili icon pl-1 text-eucalyptus-400 hover:text-java-400" title="bilibili link" rel="noopener"
+		aria-label="follow on bilibili——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path d="M7.172 2.757L10.414 6h3.171l3.243-3.242a1 1 0 0 1 1.415 1.415l-1.829 1.827L18.5 6A3.5 3.5 0 0 1 22 9.5v8a3.5 3.5 0 0 1-3.5 3.5h-13A3.5 3.5 0 0 1 2 17.5v-8A3.5 3.5 0 0 1 5.5 6h2.085L5.757 4.171a1 1 0 0 1 1.415-1.415zM18.5 8h-13a1.5 1.5 0 0 0-1.493 1.356L4 9.5v8a1.5 1.5 0 0 0 1.356 1.493L5.5 19h13a1.5 1.5 0 0 0 1.493-1.356L20 17.5v-8A1.5 1.5 0 0 0 18.5 8zM8 11a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1zm8 0a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1z"/>
+    </g>
+</svg>
+
+		</div>
+	</a>
+	
+	
+	
+	<a href='https://github.com/' target="_blank" class="github icon pl-1 text-eucalyptus-400 hover:text-java-400" title="github link" rel="noopener"
+		aria-label="follow on github——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path fill-rule="nonzero" d="M5.883 18.653c-.3-.2-.558-.455-.86-.816a50.32 50.32 0 0 1-.466-.579c-.463-.575-.755-.84-1.057-.949a1 1 0 0 1 .676-1.883c.752.27 1.261.735 1.947 1.588-.094-.117.34.427.433.539.19.227.33.365.44.438.204.137.587.196 1.15.14.023-.382.094-.753.202-1.095C5.38 15.31 3.7 13.396 3.7 9.64c0-1.24.37-2.356 1.058-3.292-.218-.894-.185-1.975.302-3.192a1 1 0 0 1 .63-.582c.081-.024.127-.035.208-.047.803-.123 1.937.17 3.415 1.096A11.731 11.731 0 0 1 12 3.315c.912 0 1.818.104 2.684.308 1.477-.933 2.613-1.226 3.422-1.096.085.013.157.03.218.05a1 1 0 0 1 .616.58c.487 1.216.52 2.297.302 3.19.691.936 1.058 2.045 1.058 3.293 0 3.757-1.674 5.665-4.642 6.392.125.415.19.879.19 1.38a300.492 300.492 0 0 1-.012 2.716 1 1 0 0 1-.019 1.958c-1.139.228-1.983-.532-1.983-1.525l.002-.446.005-.705c.005-.708.007-1.338.007-1.998 0-.697-.183-1.152-.425-1.36-.661-.57-.326-1.655.54-1.752 2.967-.333 4.337-1.482 4.337-4.66 0-.955-.312-1.744-.913-2.404a1 1 0 0 1-.19-1.045c.166-.414.237-.957.096-1.614l-.01.003c-.491.139-1.11.44-1.858.949a1 1 0 0 1-.833.135A9.626 9.626 0 0 0 12 5.315c-.89 0-1.772.119-2.592.35a1 1 0 0 1-.83-.134c-.752-.507-1.374-.807-1.868-.947-.144.653-.073 1.194.092 1.607a1 1 0 0 1-.189 1.045C6.016 7.89 5.7 8.694 5.7 9.64c0 3.172 1.371 4.328 4.322 4.66.865.097 1.201 1.177.544 1.748-.192.168-.429.732-.429 1.364v3.15c0 .986-.835 1.725-1.96 1.528a1 1 0 0 1-.04-1.962v-.99c-.91.061-1.662-.088-2.254-.485z"/>
+    </g>
+</svg>
+
+		</div>
+	</a>
+	
+	
+	
+	<a href='mailto:anon@example.com' target="_blank" class="mail icon pl-1 text-eucalyptus-400 hover:text-java-400" title="mail link" rel="noopener"
+		aria-label="follow on mail——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"/>
+    </g>
+</svg>
+		</div>
+	</a>
+	
+	
+	
+	<a href='http://example.com/' target="_blank" class="zhihu icon pl-1 text-eucalyptus-400 hover:text-java-400" title="zhihu link" rel="noopener"
+		aria-label="follow on zhihu——Opens in a new window">
+		
+		<div class="fill-current h-8 w-8">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g>
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path d="M12.344 17.963l-1.688 1.074-2.131-3.35c-.44 1.402-1.172 2.665-2.139 3.825-.402.483-.82.918-1.301 1.375-.155.147-.775.717-.878.82l-1.414-1.414c.139-.139.787-.735.915-.856.43-.408.795-.79 1.142-1.206 1.266-1.518 2.03-3.21 2.137-5.231H3v-2h4V7h-.868c-.689 1.266-1.558 2.222-2.618 2.857L2.486 8.143c1.395-.838 2.425-2.604 3.038-5.36l1.952.434c-.14.633-.303 1.227-.489 1.783H11.5v2H9v4h2.5v2H9.185l3.159 4.963zm3.838-.07L17.298 17H19V7h-4v10h.736l.446.893zM13 5h8v14h-3l-2.5 2-1-2H13V5z"/>
+    </g>
+</svg>
+
+		</div>
+	</a>
+	
+	
+</div>
+
+
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 592 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/posts/ai%E4%BB%8E%E9%9C%80%E6%B1%82%E5%88%B0%E5%8E%9F%E5%9E%8B%E5%9B%BE%E5%B0%8F%E5%AE%9E%E8%B7%B5/">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        AI从需求到原型图小实践
+    </a>
+    
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>
